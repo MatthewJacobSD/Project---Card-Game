@@ -25,7 +25,7 @@ public class Player {
     }
 
     public void drawCard() {
-        Gameplay.Cards.PlayingCard card = Gameplay.Cards.GameDeck.getInstance().dealCards;//deal a card from the deck
+        Gameplay.Cards.PlayingCard card = Gameplay.Cards.GameDeck.getInstance().dealCards();//deal a card from the deck
         hand.add(card);
     }
 
