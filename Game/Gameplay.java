@@ -78,7 +78,7 @@ public class Gameplay {
             }
 
             public void drawCard() {
-                Cards.PlayingCard card = GameDeck.getInstance().dealCards;//deal a card from the deck
+                Cards.PlayingCard card = GameDeck.getInstance().dealCards();//deal a card from the deck
                 hand.add(card);//add the card to the hand
             }
 
