@@ -1,5 +1,6 @@
 package Archive;
-
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,15 +23,16 @@ public class Profile {
         Scanner input = new Scanner(System.in);
         Profile_Info_Structure info = new Profile_Info_Structure();
 
-        //check if the user already exists
-        if (userExists(info.username) || (userExists(info.password))) {
+        System.out.print("Enter your username: ");
+        info.username = input.nextLine().trim(); // Prompt and read the username
+
+        if (userExists(info.username)) {
             System.out.println("Welcome back " + info.username + "!");
+            System.out.println("User exists: " + userExists(info.username));
+            return info.username; // Return the existing username
         }
+
         //otherwise, create a new user
-        while (info.username.isEmpty()) {
-            System.out.print("Username cannot be empty.\nEnter your username: ");
-            info.username = input.nextLine();
-        }
         while (info.name.isEmpty()) {
             System.out.print("Name cannot be empty.\nEnter your name:   ");
             info.name = input.nextLine();
@@ -52,29 +54,30 @@ public class Profile {
         // Add user information to the files
         addUserCredentialInfo(info.name, info.surname, info.dob);
         addPlayerDetails(info.username, info.password);
-
         return info.username;
     }
 
     private boolean userExists(String username) {
-        Scanner file = new Scanner(USER_CREDENTIAL_INFO_FILE_PATH);
-        while (file.hasNextLine()) {
-            String line = file.nextLine();
-            if (line.startsWith(username + ":")) {
-                file.close();
-                return true;
+        try (Scanner file = new Scanner(new File(USER_CREDENTIAL_INFO_FILE_PATH))) {
+            while (file.hasNextLine()) {
+                String line = file.nextLine();
+                String[] parts = line.split(":");
+                if (parts.length > 0 && parts[0].trim().equals(username)) {
+                    return true;
+                }
             }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace(); // Handle or log the exception as needed
         }
-        file.close();
         return false;
     }
 
-    public String getUsername(){
-        return User_profile();
-    }
-
     private String generatePassword(String name, String surname, String dob) {
+        if (surname.length() < 3) {
+            throw new IllegalArgumentException("Surname is too short to generate a password.");
+        }
         return surname.toLowerCase().substring(3, 6) + name.toUpperCase().substring(0, 2) + dob.substring(6) + surname.toUpperCase().substring(0, 2) + name.toLowerCase().substring(3, 7);
+
     }
 
     public static void addUserCredentialInfo(String name, String surname, String dob) {//Add user information to the file

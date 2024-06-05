@@ -19,20 +19,25 @@ public class Scores {
     public static void addScoretoLeaderboard() {//add the score to the leaderboard
         try {
             FileWriter fileWriter = new FileWriter(LEADERBOARD_SCORE_FILE_PATH, true);
-            fileWriter.write(player.getUsername() + ": " + player.getTotalScore() + "\n");
+            fileWriter.write(Player.getUsername() + "you beat the butler with a score of " + player.getTotalScore() + "\n");
             fileWriter.close();
         } catch (IOException e) {
             e.fillInStackTrace();
         }
     }
 
-    public static void displayLeaderboard() {//display the leaderboard
+    public static void displayLeaderboard() {
         List<String> scores = readScoresFromFile();
-        System.out.println("Leaderboard:");
-        for (String score : scores) {
-            System.out.println(score);
+        if (scores.isEmpty()) {
+            System.out.println("Leaderboard is empty.");
+        } else {
+            System.out.println("Leaderboard:");
+            for (String score : scores) {
+                System.out.println(score);
+            }
         }
     }
+
 
     private static List<String> readScoresFromFile() {//read the scores from the leaderboard
         List<String> scores = new ArrayList<>();
